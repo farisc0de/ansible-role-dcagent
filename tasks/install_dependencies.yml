@@ -1,0 +1,6 @@
+---
+- name: Install required packages
+  ansible.builtin.package:
+    name: "{{ manageengine_required_packages }}"
+    state: present
+  tags: manageengine_agent_dependencies

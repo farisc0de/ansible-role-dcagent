@@ -1,0 +1,12 @@
+---
+- name: Install dependencies
+  include_tasks: install_dependencies.yml
+
+- name: Download ManageEngine agent
+  include_tasks: download_agent.yml
+
+- name: Configure ManageEngine agent
+  include_tasks: configure_agent.yml
+
+- name: Validate ManageEngine agent installation
+  include_tasks: validate_installation.yml

@@ -1,0 +1,9 @@
+---
+galaxy_info:
+  role_name: dcagent
+  namespace: farisc0de
+  author: Faris Alotaibi
+  description: Installation of ManageEngine DC Agent
+  license: MIT
+
+  min_ansible_version: "2.4"

@@ -1,0 +1,6 @@
+---
+- name: Configure ManageEngine agent
+  ansible.builtin.template:
+    src: agent_config.j2
+    dest: "{{ manageengine_agent_install_dir }}/agent.conf"
+  tags: manageengine_agent_config

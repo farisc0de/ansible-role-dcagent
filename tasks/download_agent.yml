@@ -1,0 +1,16 @@
+---
+- name: Validate that ManageEngine agent URL is provided
+  ansible.builtin.fail:
+    msg: The variable 'manageengine_agent_url' must be defined to download the agent.
+  when: manageengine_agent_url is not defined
+
+- name: Download ManageEngine agent
+  ansible.builtin.get_url:
+    url: "{{ manageengine_agent_url }}"
+    dest: "{{ manageengine_agent_zip_path }}"
+    mode: "0755"
+  register: download_status
+  retries: 3
+  delay: 5
+  failed_when: download_status.status != 200
+  tags: manageengine_agent_download
