@@ -5,10 +5,17 @@
       - dc_agent_url != ""
     fail_msg: "Required variable dc_agent_url is not set"
 
-- name: Install Unzip
+- name: Update apt cache
   apt:
-    name: unzip
-    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install required packages
+  apt:
+    name: 
+      - unzip
+      - python3-apt
+    state: present
 
 - name: Check if agent directory exists
   stat:
