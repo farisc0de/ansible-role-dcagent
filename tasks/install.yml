@@ -19,17 +19,25 @@
     dest: "{{ dc_agent_install_dir }}/dcagent/dcagent.zip"
     mode: '0755'
     validate_certs: false
-  notify: Extract DC agent
   register: download_result
 
-- name: Check if installation directory exists
+- name: Extract Desktop Central Agent
+  ansible.builtin.unarchive:
+    src: "{{ dc_agent_install_dir }}/dcagent/dcagent.zip"
+    dest: "{{ dc_agent_install_dir }}/dcagent"
+  when: download_result.status == 200
+
+- name: Check if Desktop Central Agent is already installed
   ansible.builtin.stat:
-    path: "{{ dc_directory }}"
-  register: install_dir
+    path: "{{ dc_agent_install_dir }}/dcagent/UEMS_LinuxAgent.bin"
+  register: dcagent_installed
 
 - name: Install Desktop Central Agent
   ansible.builtin.command:
     cmd: "./UEMS_LinuxAgent.bin {% if dc_force_install %}-f{% endif %}"
     chdir: "{{ dc_agent_install_dir }}/dcagent"
   become: true
-  when: not install_dir.stat.exists or dc_force_install
+  when: not dcagent_installed.stat.exists or dc_force_install
+  register: install_result
+  changed_when: install_result.rc == 0
+  failed_when: install_result.rc != 0 and not dc_force_install
