@@ -16,9 +16,10 @@
 - name: Download Desktop Central Agent
   ansible.builtin.get_url:
     url: "{{ dc_agent_url }}"
-    dest: "{{ dc_agent_install_dir }}/dcagent/UEMS_LinuxAgent.bin"
+    dest: "{{ dc_agent_install_dir }}/dcagent/dcagent.zip"
     mode: '0755'
     validate_certs: false
+  notify: Extract DC agent
   register: download_result
 
 - name: Check if installation directory exists
