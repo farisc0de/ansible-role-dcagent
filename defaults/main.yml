@@ -11,6 +11,10 @@ dc_agent_username: "{{ ansible_user }}"
 # Base directory where the agent will be installed
 dc_agent_install_dir: "/home/{{ dc_agent_username }}"
 
+# Final installation directory
+# Directory where the agent will be installed by the installer
+dc_directory: "/usr/local/manageengine/uems_agent"
+
 # Force installation
 # If set to true, will reinstall the agent even if it exists
 dc_force_install: false

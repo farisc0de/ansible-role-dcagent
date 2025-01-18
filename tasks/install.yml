@@ -1,45 +1,34 @@
 ---
 - name: Check if agent directory exists
-  stat:
+  ansible.builtin.stat:
     path: "{{ dc_agent_install_dir }}/dcagent"
   register: dcagent_dir
 
 - name: Create agent directory
-  file:
+  ansible.builtin.file:
     path: "{{ dc_agent_install_dir }}/dcagent"
     state: directory
     owner: "{{ dc_agent_username }}"
     group: "{{ dc_agent_username }}"
     mode: '0755'
+  when: not dcagent_dir.stat.exists
 
 - name: Download Desktop Central Agent
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ dc_agent_url }}"
-    dest: "{{ dc_agent_install_dir }}/dcagent/agent.zip"
-    mode: '0644'
+    dest: "{{ dc_agent_install_dir }}/dcagent/UEMS_LinuxAgent.bin"
+    mode: '0755'
     validate_certs: false
   register: download_result
 
-- name: Extract Desktop Central Agent
-  unarchive:
-    src: "{{ dc_agent_install_dir }}/dcagent/agent.zip"
-    dest: "{{ dc_agent_install_dir }}/dcagent"
-    remote_src: true
-  when: download_result.changed or dc_force_install
+- name: Check if installation directory exists
+  ansible.builtin.stat:
+    path: "{{ dc_directory }}"
+  register: install_dir
 
-- name: Set permissions on agent files
-  file:
-    path: "{{ dc_agent_install_dir }}/dcagent"
-    state: directory
-    owner: "{{ dc_agent_username }}"
-    group: "{{ dc_agent_username }}"
-    mode: '0755'
-    recurse: true
-
-- name: Run agent installation script
-  command:
-    cmd: "./install.sh"
+- name: Install Desktop Central Agent
+  ansible.builtin.command:
+    cmd: "./UEMS_LinuxAgent.bin {% if dc_force_install %}-f{% endif %}"
     chdir: "{{ dc_agent_install_dir }}/dcagent"
-  when: download_result.changed or dc_force_install
   become: true
-  become_user: "{{ dc_agent_username }}"
+  when: not install_dir.stat.exists or dc_force_install
