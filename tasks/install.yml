@@ -25,7 +25,7 @@
   ansible.builtin.unarchive:
     src: "{{ dc_agent_install_dir }}/dcagent/dcagent.zip"
     dest: "{{ dc_agent_install_dir }}/dcagent"
-  when: download_result.status == 200
+  when: download_result is changed
 
 - name: Check if Desktop Central Agent is already installed
   ansible.builtin.stat:
