@@ -1,0 +1,16 @@
+---
+- name: Install required packages (RedHat)
+  dnf:
+    name:
+      - unzip
+      - python3
+    state: present
+  when: ansible_pkg_mgr == 'dnf'
+
+- name: Install required packages (RHEL/CentOS 7)
+  yum:
+    name:
+      - unzip
+      - python3
+    state: present
+  when: ansible_pkg_mgr == 'yum'

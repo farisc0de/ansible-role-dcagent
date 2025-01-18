@@ -1,0 +1,44 @@
+---
+- name: Check if agent directory exists
+  stat:
+    path: "{{ dc_agent_install_dir }}/dcagent"
+  register: dcagent_dir
+
+- name: Create agent directory
+  file:
+    path: "{{ dc_agent_install_dir }}/dcagent"
+    state: directory
+    owner: "{{ dc_agent_username }}"
+    group: "{{ dc_agent_username }}"
+    mode: '0755'
+
+- name: Download Desktop Central Agent
+  get_url:
+    url: "{{ dc_agent_url }}"
+    dest: "{{ dc_agent_install_dir }}/dcagent/agent.zip"
+    mode: '0644'
+  register: download_result
+
+- name: Extract Desktop Central Agent
+  unarchive:
+    src: "{{ dc_agent_install_dir }}/dcagent/agent.zip"
+    dest: "{{ dc_agent_install_dir }}/dcagent"
+    remote_src: true
+  when: download_result.changed or dc_force_install
+
+- name: Set permissions on agent files
+  file:
+    path: "{{ dc_agent_install_dir }}/dcagent"
+    state: directory
+    owner: "{{ dc_agent_username }}"
+    group: "{{ dc_agent_username }}"
+    mode: '0755'
+    recurse: true
+
+- name: Run agent installation script
+  command:
+    cmd: "./install.sh"
+    chdir: "{{ dc_agent_install_dir }}/dcagent"
+  when: download_result.changed or dc_force_install
+  become: true
+  become_user: "{{ dc_agent_username }}"

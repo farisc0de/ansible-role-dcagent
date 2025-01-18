@@ -5,63 +5,8 @@
       - dc_agent_url != ""
     fail_msg: "Required variable dc_agent_url is not set"
 
-- name: Update apt cache
-  apt:
-    update_cache: yes
-    cache_valid_time: 3600
+- name: Include OS-specific tasks
+  include_tasks: "{{ ansible_os_family }}.yml"
 
-- name: Install required packages
-  apt:
-    name: 
-      - unzip
-      - python3-apt
-    state: present
-
-- name: Check if agent directory exists
-  stat:
-    path: "/home/{{ dc_agent_username }}/dcagent"
-  register: dcagent_dir
-
-- name: Create agent directory
-  file:
-    path: "/home/{{ dc_agent_username }}/dcagent"
-    state: directory
-    mode: '0755'
-  when: not dcagent_dir.stat.exists
-
-- name: Download agent
-  shell: "curl -L -O {{ dc_agent_url }}"
-  args:
-    chdir: "/home/{{ dc_agent_username }}"
-  register: download_result
-  failed_when: download_result.rc != 0
-
-- name: Move zip to dcagent directory
-  shell: "mv dccentral_linux.zip dcagent/"
-  args:
-    chdir: "/home/{{ dc_agent_username }}"
-  when: not dcagent_dir.stat.exists
-
-- name: Unzip agent file
-  unarchive:
-    src: "/home/{{ dc_agent_username }}/dcagent/dccentral_linux.zip"
-    dest: "/home/{{ dc_agent_username }}/dcagent"
-    remote_src: yes
-  when: not dcagent_dir.stat.exists
-
-- name: Set executable permissions
-  file:
-    path: "/home/{{ dc_agent_username }}/dcagent/UEMS_LinuxAgent.bin"
-    mode: '0755'
-  when: not dcagent_dir.stat.exists
-
-- name: Check if installation directory exists
-  stat:
-    path: "{{ dc_directory }}"
-  register: install_dir
-
-- name: Install agent
-  shell: "./UEMS_LinuxAgent.bin {% if dc_force_install %}-f{% endif %}"
-  args:
-    chdir: "/home/{{ dc_agent_username }}/dcagent"
-  become: true
+- name: Include installation tasks
+  include_tasks: install.yml

@@ -1,12 +1,16 @@
 ---
 # ManageEngine Desktop Central Agent URL (required)
+# The URL from where the agent package will be downloaded
 dc_agent_url: ""
 
 # Agent username
+# The user under which the agent will run
 dc_agent_username: "{{ ansible_user }}"
 
 # Installation directory
-dc_directory: "/usr/local/manageengine/uems_agent"
+# Base directory where the agent will be installed
+dc_agent_install_dir: "/home/{{ dc_agent_username }}"
 
 # Force installation
-dc_force_install: true
+# If set to true, will reinstall the agent even if it exists
+dc_force_install: false
