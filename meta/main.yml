@@ -3,7 +3,32 @@ galaxy_info:
   role_name: dcagent
   namespace: farisc0de
   author: Faris Alotaibi
-  description: Installation of ManageEngine DC Agent
+  description: Installation and configuration of ManageEngine Desktop Central Agent for Linux systems
   license: MIT
 
-  min_ansible_version: "2.4"
+  min_ansible_version: "2.9"
+
+  platforms:
+    - name: EL  # Enterprise Linux
+      versions:
+        - "7"
+        - "8"
+        - "9"
+    - name: Ubuntu
+      versions:
+        - bionic
+        - focal
+        - jammy
+    - name: Debian
+      versions:
+        - buster
+        - bullseye
+
+  galaxy_tags:
+    - system
+    - monitoring
+    - manageengine
+    - desktop
+    - agent
+
+dependencies: []

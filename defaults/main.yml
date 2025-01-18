@@ -1,9 +1,12 @@
 ---
-manageengine_agent_url: ""
-manageengine_agent_version: "10.1.2228.19.L"
-manageengine_agent_install_dir: "/usr/local/desktopcentralagent"
-manageengine_agent_work_dir: "/home/{{ ansible_user }}/manageengine_agent"
-manageengine_agent_zip_path: "{{ manageengine_agent_work_dir }}/dccentral_linux.zip"
-manageengine_agent_executable: "{{ manageengine_agent_work_dir }}/UEMS_LinuxAgent.bin"
-manageengine_required_packages:
-  - unzip
+# ManageEngine Desktop Central Agent URL (required)
+dc_agent_url: ""
+
+# Agent username
+dc_agent_username: "{{ ansible_user }}"
+
+# Installation directory
+dc_directory: "/usr/local/manageengine/uems_agent"
+
+# Force installation
+dc_force_install: true

@@ -1,5 +1,0 @@
----
-manageengine_agent_zip_name: "dccentral_linux.zip"
-manageengine_agent_install_command: "./UEMS_LinuxAgent.bin -f"
-manageengine_required_packages:
-  - unzip
