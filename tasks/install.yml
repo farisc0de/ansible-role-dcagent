@@ -17,6 +17,7 @@
     url: "{{ dc_agent_url }}"
     dest: "{{ dc_agent_install_dir }}/dcagent/agent.zip"
     mode: '0644'
+    validate_certs: false
   register: download_result
 
 - name: Extract Desktop Central Agent
