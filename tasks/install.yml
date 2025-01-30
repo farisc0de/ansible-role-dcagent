@@ -28,17 +28,27 @@
     remote_src: true
   when: download_result is changed
 
-- name: Check if Desktop Central Agent is already installed
-  ansible.builtin.stat:
-    path: "{{ dc_agent_install_dir }}/dcagent/UEMS_LinuxAgent.bin"
-  register: dcagent_installed
+- name: Check if Desktop Central Agent is installed and running
+  ansible.builtin.shell: |
+    if systemctl is-active --quiet dcservice && [ -d "/usr/local/manageengine/uems_agent" ]; then
+      echo "installed_and_running"
+    else
+      echo "not_installed_or_not_running"
+    fi
+  register: dcagent_status
+  changed_when: false
+  failed_when: false
+
+- name: Set fact for agent installation status
+  ansible.builtin.set_fact:
+    dcagent_installed: "{{ dcagent_status.stdout == 'installed_and_running' }}"
 
 - name: Install Desktop Central Agent
   ansible.builtin.command:
     cmd: "./UEMS_LinuxAgent.bin {% if dc_force_install %}-f{% endif %}"
     chdir: "{{ dc_agent_install_dir }}/dcagent"
   become: true
-  when: not dcagent_installed.stat.exists or dc_force_install
+  when: not dcagent_installed or dc_force_install
   register: install_result
   changed_when: install_result.rc == 0
   failed_when: install_result.rc != 0 and not dc_force_install
